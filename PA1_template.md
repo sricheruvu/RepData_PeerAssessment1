@@ -31,7 +31,8 @@ Show any code that is needed to
 
 1) Load the data (i.e. \color{red}{\verb|read.csv()|}read.csv())
    
-```{r echo = TRUE}
+
+```r
 library("data.table")
 library(ggplot2)
 #Unzip the activity file. The activity file is already in the forked branch
@@ -39,35 +40,79 @@ unzip("activity.zip")
 ```
 
 2) Process/transform the data (if necessary) into a format suitable for your analysis
-```{r echo = TRUE}
+
+```r
 # read the data from the activity csv file into a Data Table called dt_activity. 
 dt_activity<- data.table::fread(input = "activity.csv")
 head(dt_activity)
+```
+
+```
+##    steps       date interval
+## 1:    NA 2012-10-01        0
+## 2:    NA 2012-10-01        5
+## 3:    NA 2012-10-01       10
+## 4:    NA 2012-10-01       15
+## 5:    NA 2012-10-01       20
+## 6:    NA 2012-10-01       25
 ```
 
 ### What is mean total number of steps taken per day?
 For this part of the assignment, you can ignore the missing values in the dataset.
 
 1) Calculate the total number of steps taken per day
-```{r}
+
+```r
 totalNumSteps <- dt_activity[,c(lapply(.SD,sum,na.rm=FALSE)),.SDcols=c("steps"),by=.(date)]
 head(totalNumSteps)
+```
+
+```
+##          date steps
+## 1: 2012-10-01    NA
+## 2: 2012-10-02   126
+## 3: 2012-10-03 11352
+## 4: 2012-10-04 12116
+## 5: 2012-10-05 13294
+## 6: 2012-10-06 15420
 ```
 
 
 2) If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
 
-```{r echo=TRUE, warning=FALSE}
+
+```r
 histPlot <- ggplot(totalNumSteps, aes(x = steps)) 
   histPlot + geom_histogram(color="black",fill = "lightblue", binwidth = 1000) +
              labs(title = "Daily Steps", x = "Total # of Steps", y = "Frequency") +
              theme(plot.title = element_text(hjust = 0.5))
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
 3) Calculate and report the mean and median of the total number of steps taken per day
-```{r echo=TRUE}
+
+```r
   totalNumSteps[,.(Mean_Steps=mean(steps,na.rm=TRUE),Median_Steps=median(steps,na.rm=TRUE))]
+```
+
+```
+##    Mean_Steps Median_Steps
+## 1:   10766.19        10765
+```
+
+```r
 head(totalNumSteps)
+```
+
+```
+##          date steps
+## 1: 2012-10-01    NA
+## 2: 2012-10-02   126
+## 3: 2012-10-03 11352
+## 4: 2012-10-04 12116
+## 5: 2012-10-05 13294
+## 6: 2012-10-06 15420
 ```
 
 
@@ -75,7 +120,8 @@ head(totalNumSteps)
 
 1) Make a time series plot (i.e. \color{red}{\verb|type = "l"|}type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).
 
-```{r echo=TRUE}
+
+```r
 dt_avg_intervals <- dt_activity[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(interval)] 
   
   tsPlot<-ggplot(dt_avg_intervals, aes(x = interval , y = steps)) 
@@ -84,56 +130,107 @@ dt_avg_intervals <- dt_activity[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = 
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
 
 2)Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-```{r echo = TRUE}
+
+```r
     dt_avg_intervals[steps == max(steps), .(max_interval = interval)]
+```
+
+```
+##    max_interval
+## 1:          835
+```
+
+```r
     head(dt_avg_intervals)
+```
+
+```
+##    interval     steps
+## 1:        0 1.7169811
+## 2:        5 0.3396226
+## 3:       10 0.1320755
+## 4:       15 0.1509434
+## 5:       20 0.0754717
+## 6:       25 2.0943396
 ```
 
 
 ### Imputing missing values
 1) Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
 
-```{r echo=TRUE}
+
+```r
     dt_activity[is.na(steps), .N ]
+```
+
+```
+## [1] 2304
+```
+
+```r
     head(dt_activity)
+```
+
+```
+##    steps       date interval
+## 1:    NA 2012-10-01        0
+## 2:    NA 2012-10-01        5
+## 3:    NA 2012-10-01       10
+## 4:    NA 2012-10-01       15
+## 5:    NA 2012-10-01       20
+## 6:    NA 2012-10-01       25
 ```
 
 2) Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
-```{r echo=TRUE}
+
+```r
     dt_activity[is.na(steps), "steps"] <- dt_activity[, c(lapply(.SD, median, na.rm = TRUE)), .SDcols = c("steps")]
 ```
 
 3) Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r echo=TRUE}
+
+```r
       data.table::fwrite(x = dt_activity, file = "newDataset.csv", quote = FALSE)    
 ```
 
 4) Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r echo=TRUE}
+
+```r
    # total number of steps taken per day
     totalNumSteps_impute <- dt_activity[, c(lapply(.SD, sum)), .SDcols = c("steps"), by = .(date)] 
     
     # mean and median total number of steps taken per day
     totalNumSteps_impute[, .(Mean_Steps = mean(steps), Median_Steps = median(steps))]
-    
+```
+
+```
+##    Mean_Steps Median_Steps
+## 1:    9354.23        10395
+```
+
+```r
     imputePlot<- ggplot(totalNumSteps_impute, aes(x = steps))  
       imputePlot + geom_histogram(color="black",fill="lightblue", binwidth = 1000) + 
       labs(title = "Daily Steps", x = "Steps", y = "Frequency") +
       theme(plot.title = element_text(hjust = 0.5))
-      
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 
 ### Are there differences in activity patterns between weekdays and weekends?
 
 1) Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
-```{r echo=TRUE}
+
+```r
       dt_activity[, date := as.POSIXct(date, format = "%Y-%m-%d")]
       dt_activity[, `Day of Week`:= weekdays(x = date)]
       dt_activity[grepl(pattern = "Monday|Tuesday|Wednesday|Thursday|Friday", 
@@ -145,7 +242,8 @@ dt_avg_intervals <- dt_activity[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = 
 
 2) Make a panel plot containing a time series plot (i.e. \color{red}{\verb|type = "l"|}type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r echo=TRUE}
+
+```r
     dt_activity[is.na(steps), "steps"] <- 
               dt_activity[, c(lapply(.SD, median, na.rm = TRUE)),.SDcols = c("steps")]
     dt_typeOfDayInterval <- 
@@ -160,6 +258,7 @@ dt_avg_intervals <- dt_activity[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = 
                        x = "Interval", y = "No. of Steps") + 
         facet_wrap(~`weekday or weekend` , ncol = 1, nrow=2) +
                   theme(plot.title = element_text(hjust = 0.5))
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
