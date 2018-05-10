@@ -143,7 +143,7 @@ $(document).ready(function () {
 <h3>Loading and preprocessing the data</h3>
 <p>Show any code that is needed to</p>
 <ol style="list-style-type: decimal">
-<li>Load the data (i.e. read.csv())</li>
+<li>Load the data (i.e. read.csv())</li>
 </ol>
 <pre class="r"><code>library(&quot;data.table&quot;)
 library(ggplot2)
@@ -204,7 +204,7 @@ head(totalNumSteps)</code></pre>
 <div id="what-is-the-average-daily-activity-pattern" class="section level3">
 <h3>What is the average daily activity pattern?</h3>
 <ol style="list-style-type: decimal">
-<li>Make a time series plot (i.e. type=“l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).</li>
+<li>Make a time series plot (i.e. type=“l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).</li>
 </ol>
 <pre class="r"><code>dt_avg_intervals &lt;- dt_activity[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c(&quot;steps&quot;), by = .(interval)] 
   
@@ -278,7 +278,7 @@ head(totalNumSteps)</code></pre>
                   &quot;weekday or weekend&quot;] &lt;- &quot;weekend&quot;
       dt_activity[, `weekday or weekend` := as.factor(`weekday or weekend`)]</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Make a panel plot containing a time series plot (i.e. type=“l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).</li>
+<li>Make a panel plot containing a time series plot (i.e. type=“l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).</li>
 </ol>
 <pre class="r"><code>    dt_activity[is.na(steps), &quot;steps&quot;] &lt;- 
               dt_activity[, c(lapply(.SD, median, na.rm = TRUE)),.SDcols = c(&quot;steps&quot;)]

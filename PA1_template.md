@@ -29,7 +29,7 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 ### Loading and preprocessing the data
 Show any code that is needed to
 
-1) Load the data (i.e. \color{red}{\verb|read.csv()|}read.csv())
+1) Load the data (i.e. read.csv())
    
 
 ```r
@@ -118,7 +118,7 @@ head(totalNumSteps)
 
 ### What is the average daily activity pattern?
 
-1) Make a time series plot (i.e. \color{red}{\verb|type = "l"|}type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).
+1) Make a time series plot (i.e. type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).
 
 
 ```r
@@ -160,7 +160,7 @@ dt_avg_intervals <- dt_activity[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = 
 
 
 ### Imputing missing values
-1) Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
+1) Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
 
 ```r
@@ -240,7 +240,7 @@ dt_avg_intervals <- dt_activity[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = 
       dt_activity[, `weekday or weekend` := as.factor(`weekday or weekend`)]
 ```
 
-2) Make a panel plot containing a time series plot (i.e. \color{red}{\verb|type = "l"|}type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+2) Make a panel plot containing a time series plot (i.e. type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 
 ```r
